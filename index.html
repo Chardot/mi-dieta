@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Dieta</title>
+  <style>
+    :root {
+      --bg-color: #121212;
+      --text-color: #ffffff;
+      --card-bg: #1e1e1e;
+      --accent-color: #bb86fc;
+      --paragraph-color: #e0e0e0;
+    }
+
+    body.light {
+      --bg-color: #f7f7f7;
+      --text-color: #000000;
+      --card-bg: #ffffff;
+      --accent-color: #6200ee;
+      --paragraph-color: #333333;
+    }
+
+    body {
+      font-family: sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-size: 2rem;
+      margin: 0;
+      color: var(--text-color);
+    }
+    .nav-button {
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 50%;
+      background-color: var(--card-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-color);
+      cursor: pointer;
+      user-select: none;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    .nav-button:hover {
+      transform: scale(1.05);
+    }
+    .nav-button svg {
+      width: 1.875rem;
+      height: 1.875rem;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6);
+      margin-bottom: 1rem;
+    }
+    .meal {
+      margin-bottom: 1.2rem;
+    }
+    .meal h2 {
+      font-size: 1.2rem;
+      margin: 0 0 0.4rem 0;
+      color: var(--accent-color);
+    }
+    .meal p {
+      margin: 0;
+      font-size: 1rem;
+      color: var(--paragraph-color);
+      white-space: pre-line;
+    }
+    #toggle-theme {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 0.5rem;
+      background: var(--accent-color);
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="nav-button" id="prev-day">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6" /></svg>
+    </div>
+    <h1 id="day-title">Día</h1>
+    <div class="nav-button" id="next-day">
+      <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18" /></svg>
+    </div>
+  </div>
+
+  <div class="card" id="meals-container">
+    <!-- Las comidas se insertarán aquí por JavaScript -->
+  </div>
+
+  <button id="toggle-theme">Cambiar tema</button>
+
+  <script>
+    const dieta = {
+      lunes: {
+        desayuno: "Café con leche. 2 rebanadas de pan integral o de centeno con queso untable desnatado.",
+        media_manana: "Batido de whey protein isolate (30g) y leche desnatada (200g).",
+        comida: "Prozis (ratatouille de pollo).",
+        merienda: "Yogur natural desnatado o griego light con muesli (40g).",
+        cena: "2 hamburguesas de ternera con verduras en air fryer."
+      },
+      martes: {
+        desayuno: "Café con leche. 2 rebanadas de pan integral o de centeno con queso untable desnatado.",
+        media_manana: "2 huevos duros.",
+        comida: "Prozis (hamburguesa a la plancha).",
+        merienda: "Yogur natural desnatado o griego light con muesli (40g).",
+        cena: "Pechuga de pollo a la plancha. 150g."
+      },
+      miercoles: {
+        desayuno: "Café con leche. 2 rebanadas de pan integral o de centeno con queso untable desnatado.",
+        media_manana: "Batido de whey protein isolate (30g) y leche desnatada (200g).",
+        comida: "Prozis (pollo al pesto mediterráneo).",
+        merienda: "Yogur natural desnatado o griego light con muesli (40g).",
+        cena: "Pechuga de pollo a la plancha. 150g."
+      },
+      jueves: {
+        desayuno: "Café con leche. 2 rebanadas de pan integral o de centeno con queso untable desnatado.",
+        media_manana: "2 huevos duros.",
+        comida: "Prozis (bowl de salmón y quinoa).",
+        merienda: "Yogur natural desnatado o griego light con muesli (40g).",
+        cena: "Merluza a la plancha. 150g."
+      },
+      viernes: {
+        desayuno: "Café con leche. 2 rebanadas de pan integral o de centeno con queso untable desnatado.",
+        media_manana: "Batido de whey protein isolate (30g) y leche desnatada (200g).",
+        comida: "Prozis (pollo salteado con verduras).",
+        merienda: "Yogur natural desnatado o griego light con muesli (40g).",
+        cena: "Una hamburguesa de Heura en pan cristal con guacamole y tomates cherry."
+      },
+      sabado: {
+        desayuno: "Café con leche. 2 rebanadas de pan integral o de centeno con queso untable desnatado.",
+        media_manana: "2 huevos duros.",
+        comida: "Pasta con carne de vacuno a la boloñesa dietética.",
+        merienda: "Yogur natural desnatado o griego light con muesli (40g).",
+        cena: "Libre."
+      },
+      domingo: {
+        desayuno: "Café con leche. 2 rebanadas de pan integral o de centeno con queso untable desnatado.",
+        media_manana: "2 huevos duros.",
+        comida: "Libre.",
+        merienda: "Yogur natural desnatado o griego light con muesli (40g).",
+        cena: "Libre."
+      }
+    };
+
+    let currentDate = new Date();
+
+    function mostrarDietaDelDia() {
+      const dias = ["domingo", "lunes", "martes", "miercoles", "jueves", "viernes", "sabado"];
+      const diaNombre = dias[currentDate.getDay()];
+      const diaNumero = currentDate.getDate();
+
+      document.getElementById("day-title").textContent = `${diaNombre.charAt(0).toUpperCase() + diaNombre.slice(1)} ${diaNumero}`;
+
+      const comidas = dieta[diaNombre];
+      const container = document.getElementById("meals-container");
+      container.innerHTML = "";
+
+      for (const [tipo, descripcion] of Object.entries(comidas)) {
+        const mealDiv = document.createElement("div");
+        mealDiv.className = "meal";
+        mealDiv.innerHTML = `
+          <h2>${tipo.replace("_", " ")}</h2>
+          <p>${descripcion}</p>
+        `;
+        container.appendChild(mealDiv);
+      }
+    }
+
+    function configurarBotonTema() {
+      const boton = document.getElementById("toggle-theme");
+      const body = document.body;
+
+      const temaGuardado = localStorage.getItem("tema") || "oscuro";
+      if (temaGuardado === "claro") {
+        body.classList.add("light");
+      }
+
+      boton.addEventListener("click", () => {
+        body.classList.toggle("light");
+        const temaActual = body.classList.contains("light") ? "claro" : "oscuro";
+        localStorage.setItem("tema", temaActual);
+      });
+    }
+
+    function configurarNavegacionDias() {
+      document.getElementById("prev-day").addEventListener("click", () => {
+        currentDate.setDate(currentDate.getDate() - 1);
+        mostrarDietaDelDia();
+      });
+
+      document.getElementById("next-day").addEventListener("click", () => {
+        currentDate.setDate(currentDate.getDate() + 1);
+        mostrarDietaDelDia();
+      });
+    }
+
+    mostrarDietaDelDia();
+    configurarBotonTema();
+    configurarNavegacionDias();
+  </script>
+</body>
+</html>
